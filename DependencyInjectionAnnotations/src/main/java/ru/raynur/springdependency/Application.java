@@ -9,6 +9,7 @@ public class Application {
         );
         Computer computer = context.getBean("computer", Computer.class);
         GamesLauncher app = computer.getGamesLauncher();
+        app.setVersion("v1.0");
         app.launch();
         System.out.println(computer.getId());
 
