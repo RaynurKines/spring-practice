@@ -1,5 +1,7 @@
 package ru.raynur.springdependency.game;
 
+import java.util.List;
+
 public interface Game {
-    String getName();
+    List<String> getTitles();
 }

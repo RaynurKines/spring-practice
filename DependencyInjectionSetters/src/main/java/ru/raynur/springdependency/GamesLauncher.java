@@ -1,28 +1,45 @@
 package ru.raynur.springdependency;
 
-import ru.raynur.springdependency.game.Game;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import ru.raynur.springdependency.game.*;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.Random;
 
+@Component
+@Scope(scopeName = "singleton") //prototype
 public class GamesLauncher {
-    private List<Game> games;
+    private final SlasherGame slasherGame;
+    private final ShooterGame shooterGame;
+    private final StrategyGame strategyGame;
 
-    private String version;
-
-    public String getVersion() {
-        return version;
+    @Autowired
+    public GamesLauncher(SlasherGame slasherGame, ShooterGame shooterGame, StrategyGame strategyGame) {
+        this.slasherGame = slasherGame;
+        this.shooterGame = shooterGame;
+        this.strategyGame = strategyGame;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    @PostConstruct
+    public void doMyInit(){
+        System.out.println("Created singleton bean - Games Launcher");
     }
 
-    public void setGames(List<Game> games) {
-        this.games = games;
+    @PreDestroy
+    public void doMyDestroy(){
+        System.out.println("Deleted singleton bean - Games Launcher");
     }
 
-    public void launch() {
-        System.out.println("Playing: " + Arrays.toString(games.stream().map(Game::getName).toArray()) + "\nversion: " + getVersion());
+    public void launch(GameGenre gameGenre) {
+        Random random = new Random();
+        switch (gameGenre) {
+            case SLASHER_GAME -> System.out.println(slasherGame.getTitles().get(random.nextInt(3)));
+            case SHOOTER_GAME -> System.out.println(shooterGame.getTitles().get(random.nextInt(3)));
+            case STRATEGY_GAME -> System.out.println(strategyGame.getTitles().get(random.nextInt(3)));
+            default -> System.out.println("Not defined genre");
+        }
     }
 }
